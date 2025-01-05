@@ -88,7 +88,7 @@ async def струи_СЭКСА():
         await asyncio.sleep(SLEEP_PERIOD_SECS)
 
 def seks_installer():
-    print(sys.executable)
+    exe = sys.executable
 
 async def am_main(host: str, port: int) -> None:
     async with TelnetClient(host, port) as client:
