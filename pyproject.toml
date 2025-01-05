@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "client_winogrona"
+name = "aioclient"
 version = "1.2.1"
 authors = [
   { name="winogrona", email="admin@winogrona.cc" },
