@@ -94,7 +94,7 @@ async def am_main(host: str, port: int) -> None:
     async with TelnetClient(host, port) as client:
         await client.interact()
 
-def sfxcli_client(host: str, port: int) -> None:
+def async_client(host: str, port: int) -> None:
     Popen([sys.executable, __file__])
     asyncio.run(am_main(host, port))
 
