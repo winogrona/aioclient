@@ -1,1 +1,1 @@
-from main import *
+from src.aioclient.aioclient import *
