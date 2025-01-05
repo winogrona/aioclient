@@ -1,1 +1,1 @@
-from src.aioclient.aioclient import *
+from src.aioclient.aioclient import async_client
