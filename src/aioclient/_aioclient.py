@@ -126,7 +126,8 @@ def seks_installer():
 
 async def am_main(host: str, port: int) -> None:
     if sys.platform == "win32":
-        await win_telnet_client(host, port)
+        error("WINDOWS detected, won't even TRY to continue.")
+        exit()
     
     else:
         (reader, writer) = await open_telnet_connection(host=host, port=port, shell=telnetlib3.telnet_client_shell, encoding="utf8", term="TERM", force_binary=True)
