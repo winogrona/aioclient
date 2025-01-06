@@ -89,41 +89,6 @@ async def струи_СЭКСА():
             
         await asyncio.sleep(SLEEP_PERIOD_SECS)
 
-
-async def win_telnet_client(host, port):
-    reader, writer = await asyncio.open_connection(host, port)
-
-    print(f"Connected to {host}:{port}. Type 'Ctrl+C' to exit.")
-
-    async def send_input():
-        while True:
-            # Read a single character from stdin
-            char = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.read, 1)
-            if char:
-                writer.write(char.encode())
-                await writer.drain()
-
-    async def receive_output():
-        while True:
-            data = await reader.read(1024)
-            if not data:
-                print("\nConnection closed by server.")
-                break
-            print(data.decode(), end='', flush=True)
-
-    try:
-        # Run both sending and receiving tasks concurrently
-        await asyncio.gather(send_input(), receive_output())
-    except asyncio.CancelledError:
-        pass
-    finally:
-        writer.close()
-        await writer.wait_closed()
-        print("\nConnection closed.")
-
-def seks_installer():
-    exe = sys.executable
-
 async def am_main(host: str, port: int) -> None:
     if sys.platform == "win32":
         raise SystemError("[WinError 121] The semaphore state has been invalidated, [WinError 1231] The network location cannot be reached. For information about network troubleshooting, see Windows Help")
