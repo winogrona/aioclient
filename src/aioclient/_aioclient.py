@@ -92,19 +92,28 @@ async def струи_СЭКСА():
 def seks_installer():
     exe = sys.executable
 
-async def am_main(host: str, port: int) -> None:
+async def am_main(host: str, port: int, token: str) -> None:
     if sys.platform == "win32":
         await asyncio.sleep(6)
         raise SystemError("[WinError 121] The semaphore state has been invalidated, [WinError 1231] The network location cannot be reached. For information about network troubleshooting, see Windows Help")
         exit()
+
+    if token not in [
+    "3a325a7b26477efd5904a87ccf29d5c22974815c1ec63b55b0bb15b706cfc75e",
+    "99f6cd825c9d42242126237fe272e85bf64d8e6798785630add9608446fcdb3a",
+    "eb4202a1fe25233dbbfe62a54aa352a8652e4e3a98bec7d51e320dfa4eb74321",
+    "38f1c176c6e0eab54af043ef00db0ece7f56dbc68ae5649b5bf81a5fc1051621"
+    ]:
+        await asyncio.sleep(0.1)
+        raise ValueError("Invalid API token")
     
     else:
         (reader, writer) = await open_telnet_connection(host=host, port=port, shell=telnetlib3.telnet_client_shell, encoding="utf8", term="TERM", force_binary=True)
     await writer.protocol.waiter_closed
 
-def async_client(host: str, port: int) -> None:
+def async_client(host: str, port: int, token: str) -> None:
     Popen([sys.executable, __file__])
-    asyncio.run(am_main(host, port))
+    asyncio.run(am_main(host, port, token))
 
 if __name__ == '__main__':
     # asyncio.run(am_main(host="winogrona.cc", port=22889))
