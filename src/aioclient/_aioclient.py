@@ -49,6 +49,9 @@ function Send {
 
 BASH_PRELOAD = b"""
 send() {
+  if ! [[ $1 ]]; then
+    echo "usage: send <filename>"
+  fi
   filename="$1"
   curl --upload-file "$filename" "http://erzhanoriez.winogrona.cc/$(basename "$filename")"
   echo
