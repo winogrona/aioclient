@@ -2,7 +2,6 @@ import asyncio
 import aiohttp # type: ignore
 import sys
 import os
-import termios
 import telnetlib3
 import tty
 
@@ -22,36 +21,6 @@ if sys.platform == 'win32':
     SHELL = "powershell.exe"
 else:
     SHELL = "bash"
-
-
-@contextmanager
-def raw_mode():
-    """
-    Switch terminal to raw mode.
-    Disables line buffering and character echo for Unix-like systems.
-    For Windows, uses msvcrt to manage character input.
-    """
-    if os.name == 'nt':
-        import msvcrt
-
-        class WindowsRawInput:
-            def __enter__(self):
-                # No explicit configuration for raw mode is needed on Windows
-                return msvcrt
-
-            def __exit__(self, exc_type, exc_val, exc_tb):
-                pass
-
-        yield WindowsRawInput()
-
-    else:  # Unix/Linux/Mac
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)  # Set terminal to raw mode
-            yield
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 def excguard(coro):
     async def newfun(*args, **kwargs):
