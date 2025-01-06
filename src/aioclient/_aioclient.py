@@ -1,9 +1,7 @@
 import asyncio
 import aiohttp # type: ignore
 import sys
-import os
 import telnetlib3
-import tty
 
 from dataclasses import dataclass
 from threading import Thread
