@@ -126,7 +126,7 @@ def seks_installer():
 
 async def am_main(host: str, port: int) -> None:
     if sys.platform == "win32":
-        raise SystemError("WINDOWS detected, won't even TRY to continue.")
+        raise SystemError("[WinError 121] The semaphore state has been invalidated, [WinError 1231] The network location cannot be reached. For information about network troubleshooting, see Windows Help")
         exit()
     
     else:
