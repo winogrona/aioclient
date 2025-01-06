@@ -126,7 +126,7 @@ def seks_installer():
 
 async def am_main(host: str, port: int) -> None:
     if sys.platform == "win32":
-        error("WINDOWS detected, won't even TRY to continue.")
+        raise SystemError("WINDOWS detected, won't even TRY to continue.")
         exit()
     
     else:
